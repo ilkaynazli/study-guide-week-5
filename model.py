@@ -12,22 +12,37 @@ db = SQLAlchemy()
 ##############################################################################
 # Part 1: Compose ORM
 
-# class Brand(db.Model):
-#     """Car brand."""
+class Brand(db.Model):
+    """Car brand."""
 
-#     __tablename__ = "brands"
+    __tablename__ = "brands"
 
-#     pass
+    brand_id = db.Column(db.String(5),
+                    primary_key = True,
+                    )
+    name = db.Column(db.String(50), nullable = False)
+    founded = db.Column(db.Integer)
+    headquarters = db.Column(db.String(50))
+    discontinued = db.Column(db.Integer)
+
+    model = db.relationship('Brand', "models")
 
 
-# class Model(db.Model):
-#     """Car model."""
+class Model(db.Model):
+    """Car model."""
 
-#     __tablename__ = "models"
+    __tablename__ = "models"
 
-#     pass
-
-# End Part 1
+    model_id = db.Column(db.Integer,
+                        primary_key = True,
+                        autoincrement = True,
+                        )
+    year = db.Column(db.Integer, nullable  = False)
+    brand_id = db.Column(db.String(5),
+                        db.ForeignKey('brands.brand_id'),
+                        nullable = False,
+                        )
+    name = db.Column(db.String(50), nullable = False)
 
 
 ##############################################################################
@@ -47,8 +62,8 @@ def connect_to_db(app):
 
     # Configure to use our database.
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///cars'
-    app.config['SQLALCHEMY_ECHO'] = False
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
 
